@@ -1,0 +1,79 @@
+-- Community Connect — Seed Data (5 starter organizations)
+
+insert into organizations (name, type, description, website, phone, domains, tier_served, zip_codes, state_wide, languages, accepting, waitlist, verified)
+values
+  (
+    '211 Helpline',
+    'government',
+    'Free, confidential help connecting you to local services for housing, food, health, and more. Available 24/7.',
+    'https://www.211.org',
+    '211',
+    '{"housing","nutrition","health","education","safety","work"}',
+    '{1,2,3,4}',
+    '{}',
+    true,
+    '{"English","Spanish"}',
+    true,
+    false,
+    true
+  ),
+  (
+    'National Domestic Violence Hotline',
+    'nonprofit',
+    'Confidential support for anyone affected by domestic violence. Crisis intervention, safety planning, and local referrals.',
+    'https://www.thehotline.org',
+    '1-800-799-7233',
+    '{"safety"}',
+    '{1,2}',
+    '{}',
+    true,
+    '{"English","Spanish"}',
+    true,
+    false,
+    true
+  ),
+  (
+    'Local Food Bank',
+    'nonprofit',
+    'Free groceries and food boxes for individuals and families in need. No income verification required.',
+    null,
+    null,
+    '{"nutrition"}',
+    '{1,2,3}',
+    '{}',
+    false,
+    '{"English"}',
+    true,
+    false,
+    false
+  ),
+  (
+    'Community Health Center',
+    'nonprofit',
+    'Sliding-scale medical, dental, and mental health care regardless of insurance status or ability to pay.',
+    null,
+    null,
+    '{"health"}',
+    '{1,2,3}',
+    '{}',
+    false,
+    '{"English","Spanish"}',
+    true,
+    true,
+    false
+  ),
+  (
+    'Workforce Development Center',
+    'government',
+    'Free job training, resume help, interview coaching, and connections to local employers.',
+    null,
+    null,
+    '{"work","education"}',
+    '{2,3,4}',
+    '{}',
+    false,
+    '{"English"}',
+    true,
+    false,
+    false
+  );
