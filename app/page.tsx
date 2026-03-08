@@ -44,7 +44,7 @@ export default function Home() {
           Find the help you need, today.
         </h1>
         <p className="text-lg text-muted-foreground mb-8">
-          Answer a few simple questions and we'll connect you with local
+          Answer a few simple questions and we&apos;ll connect you with local
           organizations that can help — no account needed, completely free.
         </p>
         <Link href="/intake/housing">
