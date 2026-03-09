@@ -1,104 +1,89 @@
-import type { DomainResult } from "@/types";
+export type DomainAnswers = Record<string, string | number | boolean>
 
-// Housing tier scoring
-export function scoreHousing(flags: string[]): number {
-  if (
-    flags.includes("no_stable_housing") ||
-    flags.includes("imminent_eviction")
-  )
-    return 1;
-  if (flags.includes("at_risk_housing") || flags.includes("unsafe_conditions"))
-    return 2;
-  if (flags.includes("overcrowded") || flags.includes("some_utility_issues"))
-    return 3;
-  return 4;
+export type ScoringResult = {
+  tier: 1 | 2 | 3 | 4
+  flags: string[]
 }
 
-// Nutrition tier scoring
-export function scoreNutrition(flags: string[]): number {
-  if (flags.includes("food_ran_out") || flags.includes("worried_food_runout"))
-    return 1;
-  if (flags.includes("no_kitchen_access")) return 2;
-  if (flags.includes("dietary_access_barriers")) return 3;
-  return 4;
+export function scoreHousing(a: DomainAnswers): ScoringResult {
+  const flags: string[] = []
+  if (a.stableHousing === 'no') flags.push('no_stable_housing')
+  if (a.worryLosing === 'yes') flags.push('at_risk_eviction')
+  if (a.utilities === 'no') flags.push('no_utilities')
+  if (a.safetyConcerns === 'yes') flags.push('unsafe_conditions')
+  if (a.overcrowded === 'yes') flags.push('overcrowded')
+
+  if (flags.includes('no_stable_housing') || flags.includes('at_risk_eviction')) return { tier: 1, flags }
+  if (flags.includes('no_utilities') || flags.includes('unsafe_conditions') || flags.includes('overcrowded')) return { tier: 2, flags }
+  if (flags.length > 0) return { tier: 3, flags }
+  return { tier: 4, flags }
 }
 
-// Health tier scoring
-export function scoreHealth(flags: string[]): number {
-  if (
-    flags.includes("no_insurance") ||
-    flags.includes("mental_health_crisis") ||
-    flags.includes("no_medications")
-  )
-    return 1;
-  if (
-    flags.includes("unable_to_get_care") ||
-    flags.includes("sometimes_no_medications")
-  )
-    return 2;
-  if (flags.includes("managing_chronic_condition")) return 3;
-  return 4;
+export function scoreNutrition(a: DomainAnswers): ScoringResult {
+  const flags: string[] = []
+  if (a.worriedFoodRunOut === 'yes') flags.push('food_insecurity_worry')
+  if (a.foodDidntLast === 'yes') flags.push('food_insecurity_actual')
+  if (a.kitchenAccess === 'no') flags.push('no_kitchen_access')
+  if (a.culturalBarriers === 'yes') flags.push('cultural_food_barriers')
+
+  if (flags.includes('food_insecurity_worry') || flags.includes('food_insecurity_actual')) return { tier: 1, flags }
+  if (flags.includes('no_kitchen_access') || flags.includes('cultural_food_barriers')) return { tier: 2, flags }
+  if (flags.length > 0) return { tier: 3, flags }
+  return { tier: 4, flags }
 }
 
-// Education tier scoring
-export function scoreEducation(flags: string[]): number {
-  if (
-    flags.includes("child_not_enrolled") ||
-    flags.includes("no_device_or_internet")
-  )
-    return 1;
-  if (flags.includes("education_barriers")) return 2;
-  if (flags.includes("interested_in_training")) return 3;
-  return 4;
+export function scoreHealth(a: DomainAnswers): ScoringResult {
+  const flags: string[] = []
+  if (a.hasInsurance === 'no') flags.push('no_insurance')
+  if (a.unableToGetCare === 'yes') flags.push('unable_to_get_care')
+  if (a.ongoingConditions === 'yes') flags.push('ongoing_conditions')
+  if (a.medicationAccess === 'no') flags.push('no_medication_access')
+  if (a.medicationAccess === 'sometimes') flags.push('inconsistent_medication')
+  if (Number(a.mentalHealth) <= 2) flags.push('mental_health_crisis')
+
+  if (flags.includes('no_insurance') && flags.includes('unable_to_get_care')) return { tier: 1, flags }
+  if (flags.includes('no_insurance') || flags.includes('no_medication_access') || flags.includes('mental_health_crisis')) return { tier: 2, flags }
+  if (flags.length > 0) return { tier: 3, flags }
+  return { tier: 4, flags }
 }
 
-// Safety tier scoring
-export function scoreSafety(flags: string[]): number {
-  if (
-    flags.includes("currently_unsafe") ||
-    flags.includes("physical_harm_or_threat")
-  )
-    return 1;
-  if (flags.includes("sometimes_unsafe")) return 2;
-  if (flags.includes("criminal_justice_impact")) return 3;
-  return 4;
+export function scoreEducation(a: DomainAnswers): ScoringResult {
+  const flags: string[] = []
+  if (a.childEnrolled === 'not_enrolled') flags.push('child_not_enrolled')
+  if (a.internetAccess === 'no') flags.push('no_internet_access')
+  if (a.educationBarriers === 'yes') flags.push('education_barriers')
+  if (a.currentlyInSchool === 'interested') flags.push('interested_in_training')
+
+  if (flags.includes('child_not_enrolled')) return { tier: 1, flags }
+  if (flags.includes('no_internet_access') || flags.includes('education_barriers')) return { tier: 2, flags }
+  if (flags.includes('interested_in_training')) return { tier: 3, flags }
+  return { tier: 4, flags }
 }
 
-// Work tier scoring
-export function scoreWork(flags: string[]): number {
-  if (
-    flags.includes("unemployed_no_income") ||
-    flags.includes("cannot_meet_basic_needs")
-  )
-    return 1;
-  if (flags.includes("unemployed_looking") || flags.includes("sometimes_meets_needs"))
-    return 2;
-  if (flags.includes("interested_in_training") || flags.includes("has_work_barriers"))
-    return 3;
-  return 4;
+export function scoreSafety(a: DomainAnswers): ScoringResult {
+  const flags: string[] = []
+  if (a.feelsSafe === 'no') flags.push('feels_unsafe')
+  if (a.feelsSafe === 'sometimes') flags.push('sometimes_unsafe')
+  if (a.physicalHarm === 'yes') flags.push('experienced_harm')
+  if (a.unsafeSituation === 'yes') flags.push('current_unsafe_situation')
+  if (a.criminalJustice === 'yes') flags.push('criminal_justice_involvement')
+
+  if (flags.includes('feels_unsafe') || flags.includes('experienced_harm') || flags.includes('current_unsafe_situation')) return { tier: 1, flags }
+  if (flags.includes('sometimes_unsafe') || flags.includes('criminal_justice_involvement')) return { tier: 2, flags }
+  if (flags.length > 0) return { tier: 3, flags }
+  return { tier: 4, flags }
 }
 
-export function scoreDomain(domain: string, flags: string[]): DomainResult {
-  let tier = 4;
-  switch (domain) {
-    case "housing":
-      tier = scoreHousing(flags);
-      break;
-    case "nutrition":
-      tier = scoreNutrition(flags);
-      break;
-    case "health":
-      tier = scoreHealth(flags);
-      break;
-    case "education":
-      tier = scoreEducation(flags);
-      break;
-    case "safety":
-      tier = scoreSafety(flags);
-      break;
-    case "work":
-      tier = scoreWork(flags);
-      break;
-  }
-  return { domain, tier, flags };
+export function scoreWork(a: DomainAnswers): ScoringResult {
+  const flags: string[] = []
+  if (a.employmentStatus === 'unemployed_looking' || a.employmentStatus === 'unemployed_not_looking') flags.push('unemployed')
+  if (a.incomeCoversNeeds === 'no') flags.push('income_insufficient')
+  if (a.incomeCoversNeeds === 'sometimes') flags.push('income_inconsistent')
+  if (a.hasTransportation === 'no') flags.push('no_transportation')
+  if (a.interestedInTraining === 'yes') flags.push('wants_job_training')
+
+  if (flags.includes('unemployed') && flags.includes('income_insufficient')) return { tier: 1, flags }
+  if (flags.includes('unemployed') || flags.includes('income_inconsistent')) return { tier: 2, flags }
+  if (flags.length > 0) return { tier: 3, flags }
+  return { tier: 4, flags }
 }
