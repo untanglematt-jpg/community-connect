@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { DomainSection } from '@/components/results/DomainSection'
-//import type { OrgMatch } from '@/lib/matching'
+import type { MatchResult, IntakeSession } from '@/types'
 
 const DOMAIN_ORDER = ['safety', 'housing', 'nutrition', 'health', 'education', 'work']
 
@@ -78,8 +78,7 @@ export default function ResultsPage() {
             <DomainSection
               key={domain}
               domain={domain}
-              tier={data.matches[domain][0].tier}
-              matches={data.matches[domain]}
+tier={data.session[`${domain}_tier` as keyof IntakeSession] as number}              matches={data.matches[domain]}
             />
           ))
         )}
