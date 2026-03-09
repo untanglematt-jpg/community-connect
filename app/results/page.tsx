@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { DomainSection } from '@/components/results/DomainSection'
-import type { OrgMatch } from '@/lib/matching'
+//import type { OrgMatch } from '@/lib/matching'
 
 const DOMAIN_ORDER = ['safety', 'housing', 'nutrition', 'health', 'education', 'work']
 

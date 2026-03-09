@@ -56,7 +56,7 @@ function NoResultsFallback({ domain }: { domain: string }) {
   return (
     <div className="bg-stone-50 rounded-2xl border border-stone-100 p-5 space-y-3">
       <p className="text-sm text-stone-600">
-        We're still building our list of {domain} resources in your area. In the meantime, <strong>211</strong> can connect you with local help.
+        We&apos;re still building our list of {domain} resources in your area. In the meantime, <strong>211</strong> can connect you with local help.
       </p>
       <a href="tel:211" className="block text-sm text-green-700 font-medium underline">
         📞 Call or text 211 — free, confidential, 24/7

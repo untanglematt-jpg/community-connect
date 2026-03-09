@@ -46,8 +46,8 @@ export default function CompletePage() {
   return (
     <div className="min-h-screen bg-amber-50">
       <div className="max-w-xl mx-auto px-4 py-10">
-        <h1 className="text-2xl font-semibold text-stone-800 mb-2">Here's what we found</h1>
-        <p className="text-stone-500 mb-8">Based on your answers, here's a summary of your needs across each area.</p>
+        <h1 className="text-2xl font-semibold text-stone-800 mb-2">Here&apos;s what we found</h1>
+        <p className="text-stone-500 mb-8">Based on your answers, here&apos;s a summary of your needs across each area.</p>
 
         <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 space-y-4 mb-6">
           {DOMAINS.map(domain => {

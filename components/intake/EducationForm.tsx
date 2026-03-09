@@ -43,8 +43,8 @@ export function EducationForm({ onComplete }: { onComplete: (r: DomainResult) =>
             <SelectItem value="less_than_high_school">Less than high school</SelectItem>
             <SelectItem value="high_school_ged">High school / GED</SelectItem>
             <SelectItem value="some_college">Some college</SelectItem>
-            <SelectItem value="associates">Associate's degree</SelectItem>
-            <SelectItem value="bachelors">Bachelor's degree</SelectItem>
+            <SelectItem value="associates">Associate&apos;s degree</SelectItem>
+            <SelectItem value="bachelors">Bachelor&apos;s degree</SelectItem>
             <SelectItem value="graduate">Graduate degree</SelectItem>
           </SelectContent>
         </Select>

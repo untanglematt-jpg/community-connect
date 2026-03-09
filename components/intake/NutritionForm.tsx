@@ -44,7 +44,7 @@ export function NutritionForm({ onComplete }: { onComplete: (r: DomainResult) =>
       </div>
 
       <div className="space-y-2">
-        <p className="text-base font-medium text-stone-800">In the last 12 months, did the food you bought not last and you didn't have money to get more?</p>
+        <p className="text-base font-medium text-stone-800">In the last 12 months, did the food you bought not last and you didn&apos;t have money to get more?</p>
         <div className="space-y-2">
           {[['yes', 'Yes'], ['no', 'No']].map(([val, label]) => (
             <label key={val} className="flex items-center gap-3 cursor-pointer">
