@@ -1,5 +1,5 @@
 import { OrgCard } from './OrgCard'
-import type { OrgMatch } from '@/lib/matching'
+import type { MatchResult } from '@/types'
 
 const DOMAIN_META: Record<string, { label: string; emoji: string; blurb: string }> = {
   housing:   { label: 'Housing',   emoji: '🏠', blurb: 'Based on what you shared about your housing situation, these organizations may be able to help.' },
@@ -21,7 +21,7 @@ const TIER_COLORS: Record<number, string> = {
 type Props = {
   domain: string
   tier: number
-  matches: OrgMatch[]
+matches: MatchResult[]
   referralIds?: Record<string, string>
 }
 

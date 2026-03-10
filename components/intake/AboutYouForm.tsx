@@ -10,7 +10,7 @@ import type { AboutYou } from '@/lib/intake-context'
 
 const schema = z.object({
   zipCode: z.string().regex(/^\d{5}$/, 'Please enter a valid 5-digit zip code'),
-  householdSize: z.coerce.number().min(1).max(20),
+  householdSize: z.number().int().min(1).max(20),
   preferredLanguage: z.string().optional(),
 })
 
@@ -23,7 +23,10 @@ export function AboutYouForm({ onComplete }: { onComplete: (data: AboutYou) => v
   })
 
   return (
-    <form onSubmit={handleSubmit(onComplete)} className="space-y-6">
+    <form onSubmit={handleSubmit((data) => onComplete({
+  ...data,
+  preferredLanguage: data.preferredLanguage ?? 'english'
+}))} className="space-y-6">
       <p className="text-stone-500 text-sm">Just a few quick details to help us find resources near you.</p>
 
       <div className="space-y-2">
@@ -42,7 +45,7 @@ export function AboutYouForm({ onComplete }: { onComplete: (data: AboutYou) => v
         <input
           id="householdSize"
           type="number"
-          {...register('householdSize')}
+          {...register('householdSize', { valueAsNumber: true })}
           min={1}
           max={20}
           className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"

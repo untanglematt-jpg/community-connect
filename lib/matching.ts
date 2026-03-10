@@ -21,11 +21,12 @@ const CRISIS_RESOURCE: Organization = {
   languages: ['english', 'spanish'],
   domains: ['safety'],
   tier_served: [1],
-  income_max_fpl: null,
-  age_min: null,
-  age_max: null,
+  income_max_fpl: undefined,
+age_min: undefined,
+age_max: undefined,
   accepting: true,
   waitlist: false,
+  verified: true,
 }
 
 export function scoreMatch(

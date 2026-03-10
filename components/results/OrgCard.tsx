@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase'
-import type { Organization } from '@/lib/matching'
+import type { Organization } from '@/types'
 
 const TYPE_COLORS: Record<string, string> = {
   government: 'bg-blue-100 text-blue-700',

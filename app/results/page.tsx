@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { DomainSection } from '@/components/results/DomainSection'
 import type { MatchResult, IntakeSession } from '@/types'
@@ -12,7 +12,7 @@ type PageData = {
   session: IntakeSession
 }
 
-export default function ResultsPage() {
+function ResultsPageInner() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session')
   const [data, setData] = useState<PageData | null>(null)
@@ -54,11 +54,11 @@ export default function ResultsPage() {
   }
 
   const urgentDomains = DOMAIN_ORDER.filter(domain => {
-  const matches = data.matches[domain]
-  if (!matches || matches.length === 0) return false
-  const tierKey = `${domain}_tier` as keyof typeof data.session
-  return (data.session[tierKey] as number) <= 2
-})
+    const matches = data.matches[domain]
+    if (!matches || matches.length === 0) return false
+    const tierKey = `${domain}_tier` as keyof typeof data.session
+    return (data.session[tierKey] as number) <= 2
+  })
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -78,7 +78,8 @@ export default function ResultsPage() {
             <DomainSection
               key={domain}
               domain={domain}
-tier={data.session[`${domain}_tier` as keyof IntakeSession] as number}              matches={data.matches[domain]}
+              tier={data.session[`${domain}_tier` as keyof IntakeSession] as number}
+              matches={data.matches[domain]}
             />
           ))
         )}
@@ -91,5 +92,20 @@ tier={data.session[`${domain}_tier` as keyof IntakeSession] as number}          
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-amber-50 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-stone-500 text-sm">Loading…</p>
+        </div>
+      </div>
+    }>
+      <ResultsPageInner />
+    </Suspense>
   )
 }
