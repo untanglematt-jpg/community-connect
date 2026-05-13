@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // /app/my-results/page.tsx
 // Server component — protected by middleware
 // Shows a logged-in user their previous intake sessions
@@ -12,7 +13,6 @@ const DOMAIN_LABELS: Record<string, string> = {
   health: '🏥 Health',
   education: '📚 Education',
   work: '💼 Work',
-  // Safety intentionally omitted — never displayed
 }
 
 const TIER_COLORS: Record<number, string> = {
@@ -40,7 +40,6 @@ export default async function MyResultsPage() {
   const { data: { session } } = await supabase.auth.getSession()
 
   if (!session) {
-    // Middleware should have caught this, but just in case:
     return null
   }
 
@@ -71,12 +70,13 @@ export default async function MyResultsPage() {
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-8 text-center">
             <p className="text-stone-500 text-sm mb-4">You don&apos;t have any saved results yet.</p>
             <Link href="/intake/housing">
-              <Button className="bg-green-600 hover:bg-green-700 text-white">Start a new assessment</Button>
+              <Button className="bg-green-600 hover:bg-green-700 text-white">
+                Start a new assessment
+              </Button>
             </Link>
           </div>
         ) : (
           <div className="space-y-4">
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             {sessions.map((s: any) => (
               <div key={s.id} className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5">
                 <div className="flex items-center justify-between mb-4">
