@@ -7,8 +7,14 @@ import type { MatchResult, IntakeSession } from '@/types'
 
 const DOMAIN_ORDER = ['safety', 'housing', 'nutrition', 'health', 'education', 'work']
 
+type DomainResult = {
+  domain: string
+  tier: number
+  matches: MatchResult[]
+}
+
 type PageData = {
-  matches: Record<string, MatchResult[]>
+  results: DomainResult[]
   session: IntakeSession
 }
 
@@ -27,7 +33,15 @@ function ResultsPageInner() {
       body: JSON.stringify({ sessionId }),
     })
       .then(res => res.json())
-      .then(json => { setData(json); setLoading(false) })
+      .then(json => {
+        console.log('match response:', json)
+        if (json.error) {
+          setError(true)
+        } else {
+          setData(json)
+        }
+        setLoading(false)
+      })
       .catch(() => { setError(true); setLoading(false) })
   }, [sessionId])
 
@@ -54,8 +68,8 @@ function ResultsPageInner() {
   }
 
   const urgentDomains = DOMAIN_ORDER.filter(domain => {
-    const matches = data.matches[domain]
-    if (!matches || matches.length === 0) return false
+    const matches = data.results?.find(r => r.domain === domain)?.matches ?? []
+    if (matches.length === 0) return false
     const tierKey = `${domain}_tier` as keyof typeof data.session
     return (data.session[tierKey] as number) <= 2
   })
@@ -79,7 +93,7 @@ function ResultsPageInner() {
               key={domain}
               domain={domain}
               tier={data.session[`${domain}_tier` as keyof IntakeSession] as number}
-              matches={data.matches[domain]}
+              matches={data.results?.find(r => r.domain === domain)?.matches ?? []}
             />
           ))
         )}

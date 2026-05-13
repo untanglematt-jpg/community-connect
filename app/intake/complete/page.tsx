@@ -1,10 +1,11 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useIntake } from '@/lib/intake-context'
 import { Button } from '@/components/ui/button'
+import { SavePrompt } from '@/components/intake/SavePrompt'
 
-// Safety is intentionally excluded — answers are used for routing only, never displayed
 const DOMAINS = ['housing', 'nutrition', 'health', 'education', 'work']
 
 const DOMAIN_LABELS: Record<string, string> = {
@@ -32,15 +33,21 @@ const TIER_LABELS: Record<number, string> = {
 export default function CompletePage() {
   const { results, aboutYou } = useIntake()
   const router = useRouter()
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
-  const handleFindResources = async () => {
-    const res = await fetch('/api/intake', {
+  // Save the session as soon as the page loads so SavePrompt has an ID
+  useEffect(() => {
+    fetch('/api/intake', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ results, aboutYou }),
     })
-    const { sessionId } = await res.json()
-    router.push(`/results?session=${sessionId}`)
+      .then(res => res.json())
+      .then(({ sessionId }) => setSessionId(sessionId))
+  }, [])
+
+  const handleFindResources = () => {
+    if (sessionId) router.push(`/results?session=${sessionId}`)
   }
 
   return (
@@ -48,6 +55,8 @@ export default function CompletePage() {
       <div className="max-w-xl mx-auto px-4 py-10">
         <h1 className="text-2xl font-semibold text-stone-800 mb-2">Here&apos;s what we found</h1>
         <p className="text-stone-500 mb-8">Based on your answers, here&apos;s a summary of your needs across each area.</p>
+
+        <SavePrompt sessionId={sessionId} />
 
         <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 space-y-4 mb-6">
           {DOMAINS.map(domain => {
@@ -66,6 +75,7 @@ export default function CompletePage() {
 
         <Button
           onClick={handleFindResources}
+          disabled={!sessionId}
           className="w-full bg-green-600 hover:bg-green-700 text-white"
         >
           Find Resources →

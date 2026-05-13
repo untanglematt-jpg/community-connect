@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
@@ -10,7 +9,6 @@ export async function POST(req: NextRequest) {
   try {
     const { sessionId } = await req.json()
 
-    // Fetch the session so we can return it to the results page
     const { data: session, error } = await supabase
       .from('intake_sessions')
       .select('*')
@@ -21,7 +19,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Session not found' }, { status: 404 })
     }
 
-    // Call Python matching service
     const res = await fetch(`${MATCHING_SERVICE_URL}/match`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -32,11 +29,11 @@ export async function POST(req: NextRequest) {
 
     const { results } = await res.json()
 
-    // Convert Python response array into the Record<domain, matches[]> shape
-    // that the results page expects
-    const matches: Record<string, any[]> = {}
-    for (const domainResult of results) {
-      matches[domainResult.domain] = domainResult.matches.map((m: any) => ({
+    // Convert flat Python response into nested shape DomainSection expects
+    const formattedResults = results.map((d: any) => ({
+      domain: d.domain,
+      tier: d.tier,
+      matches: d.matches.map((m: any) => ({
         organization: {
           id: m.org_id,
           name: m.name,
@@ -50,9 +47,9 @@ export async function POST(req: NextRequest) {
         domain: m.domain,
         match_score: m.match_score,
       }))
-    }
+    }))
 
-    // Save referrals to Supabase (same as before)
+    // Save referrals
     const referrals = results
       .flatMap((d: any) => d.matches)
       .filter((m: any) => m.org_id !== 'crisis-dv-hotline')
@@ -68,7 +65,7 @@ export async function POST(req: NextRequest) {
       await supabase.from('referrals').insert(referrals)
     }
 
-    return NextResponse.json({ matches, session })
+    return NextResponse.json({ results: formattedResults, session })
   } catch (err) {
     console.error('/api/match error:', err)
     return NextResponse.json({ error: 'Matching failed' }, { status: 500 })
