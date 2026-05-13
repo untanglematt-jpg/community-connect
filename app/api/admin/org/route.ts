@@ -30,7 +30,7 @@ async function getAuthedOrgAdmin() {
   return { error: null, status: 200, supabase, user: session.user }
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   const { error, status, supabase, user } = await getAuthedOrgAdmin()
 
   if (error || !user) {
