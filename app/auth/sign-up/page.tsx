@@ -1,6 +1,7 @@
 // /app/auth/sign-up/page.tsx
 'use client'
 
+import { Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -18,7 +19,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const returnTo = searchParams.get('returnTo') || '/my-results'
@@ -107,5 +108,17 @@ export default function SignUpPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-amber-50 flex items-center justify-center">
+        <p className="text-stone-500 text-sm">Loading…</p>
+      </div>
+    }>
+      <SignUpForm />
+    </Suspense>
   )
 }
