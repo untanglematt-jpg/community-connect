@@ -8,8 +8,8 @@ import { createServerClient } from '@/lib/auth-helpers-server'
 // Fields org admins are allowed to edit
 const ALLOWED_FIELDS = ['description', 'phone', 'website', 'address', 'accepting', 'waitlist']
 
-async function getAuthedOrgAdmin(req: NextRequest, res: NextResponse) {
-  const supabase = createServerClient(req, res)
+async function getAuthedOrgAdmin() {
+  const supabase = createServerClient()
 
   const {
     data: { session },
@@ -30,9 +30,8 @@ async function getAuthedOrgAdmin(req: NextRequest, res: NextResponse) {
   return { error: null, status: 200, supabase, user: session.user }
 }
 
-export async function GET(req: NextRequest) {
-  const res = NextResponse.next()
-  const { error, status, supabase, user } = await getAuthedOrgAdmin(req, res)
+export async function GET(_req: NextRequest) {
+  const { error, status, supabase, user } = await getAuthedOrgAdmin()
 
   if (error || !user) {
     return NextResponse.json({ error }, { status })
@@ -52,14 +51,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const res = NextResponse.next()
-  const { error, status, supabase, user } = await getAuthedOrgAdmin(req, res)
+  const { error, status, supabase, user } = await getAuthedOrgAdmin()
 
   if (error || !user) {
     return NextResponse.json({ error }, { status })
   }
 
-  // Confirm the org belongs to this user
   const { data: org } = await supabase
     .from('organizations')
     .select('id')
@@ -72,7 +69,6 @@ export async function PUT(req: NextRequest) {
 
   const body = await req.json()
 
-  // Build the update from the allowlist only
   const updates: Record<string, unknown> = {}
   for (const field of ALLOWED_FIELDS) {
     if (field in body) {
@@ -80,7 +76,6 @@ export async function PUT(req: NextRequest) {
     }
   }
 
-  // Stamp last_verified when confirm flag is passed
   if (body.confirm === true) {
     updates.last_verified = new Date().toISOString().split('T')[0]
   }
