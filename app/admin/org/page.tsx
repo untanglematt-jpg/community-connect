@@ -140,7 +140,7 @@ export default function OrgAdminPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-8 max-w-sm text-center">
           <p className="text-stone-700 font-medium mb-2">No organization linked</p>
           <p className="text-stone-500 text-sm">
-            Your account hasn't been linked to an organization yet. Contact your platform administrator.
+            Your account has not been linked to an organization yet. Contact your platform administrator.
           </p>
         </div>
       </div>

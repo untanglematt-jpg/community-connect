@@ -3,7 +3,7 @@
 // PUT  — updates allowed fields; pass { confirm: true } to stamp last_verified
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/auth-helpers'
+import { createServerClient } from '@/lib/auth-helpers-server'
 
 // Fields org admins are allowed to edit
 const ALLOWED_FIELDS = ['description', 'phone', 'website', 'address', 'accepting', 'waitlist']

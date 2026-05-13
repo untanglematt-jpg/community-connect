@@ -44,7 +44,7 @@ export default async function MyResultsPage() {
     return null
   }
 
-  const { data: sessions, error } = await supabase
+  const { data: sessions } = await supabase
     .from('intake_sessions')
     .select('*')
     .eq('user_id', session.user.id)
@@ -76,6 +76,7 @@ export default async function MyResultsPage() {
           </div>
         ) : (
           <div className="space-y-4">
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             {sessions.map((s: any) => (
               <div key={s.id} className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5">
                 <div className="flex items-center justify-between mb-4">
